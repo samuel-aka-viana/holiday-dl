@@ -1,0 +1,18 @@
+[2024-10-27T21:17:10.642+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: holiday_etl_pipeline.extract_to_landing manual__2024-10-27T21:17:09.161798+00:00 [queued]>
+[2024-10-27T21:17:10.648+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: holiday_etl_pipeline.extract_to_landing manual__2024-10-27T21:17:09.161798+00:00 [queued]>
+[2024-10-27T21:17:10.649+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2024-10-27T21:17:10.659+0000] {taskinstance.py:2191} INFO - Executing <Task(_PythonDecoratedOperator): extract_to_landing> on 2024-10-27 21:17:09.161798+00:00
+[2024-10-27T21:17:10.664+0000] {standard_task_runner.py:60} INFO - Started process 82 to run task
+[2024-10-27T21:17:10.667+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'holiday_etl_pipeline', 'extract_to_landing', 'manual__2024-10-27T21:17:09.161798+00:00', '--job-id', '4', '--raw', '--subdir', 'DAGS_FOLDER/holidays_orchestror.py', '--cfg-path', '/tmp/tmpa3iwmbn5']
+[2024-10-27T21:17:10.670+0000] {standard_task_runner.py:88} INFO - Job 4: Subtask extract_to_landing
+[2024-10-27T21:17:10.715+0000] {task_command.py:423} INFO - Running <TaskInstance: holiday_etl_pipeline.extract_to_landing manual__2024-10-27T21:17:09.161798+00:00 [running]> on host 2a7fac9bc479
+[2024-10-27T21:17:10.791+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='holiday_etl_pipeline' AIRFLOW_CTX_TASK_ID='extract_to_landing' AIRFLOW_CTX_EXECUTION_DATE='2024-10-27T21:17:09.161798+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-10-27T21:17:09.161798+00:00'
+[2024-10-27T21:17:41.952+0000] {spark_session.py:47} INFO - Sessão Spark criada com sucesso
+[2024-10-27T21:17:41.953+0000] {spark_session.py:48} INFO - Spark Version: 3.4.1
+[2024-10-27T21:17:41.953+0000] {spark_session.py:49} INFO - Python Location: /usr/local/bin/python
+[2024-10-27T21:17:41.954+0000] {holliday_landing.py:83} INFO - Fetching national holidays for year: 2024
+[2024-10-27T21:17:42.001+0000] {holliday_landing.py:99} INFO - Fetched 0 national holidays
+[2024-10-27T21:17:42.001+0000] {holliday_landing.py:104} INFO - Fetching state holidays for year: 2024
+[2024-10-27T21:17:42.004+0000] {holliday_landing.py:121} INFO - Fetched 0 state holidays
+[2024-10-27T21:17:42.004+0000] {holliday_landing.py:125} INFO - Creating Spark DataFrame with 0 holidays
+[2024-10-27T21:17:44.072+0000] {holliday_landing.py:131} INFO - Saving DataFrame to JSON at s3a://datalake/landing/holidays/year=2024/holidays_2024-10-27.json

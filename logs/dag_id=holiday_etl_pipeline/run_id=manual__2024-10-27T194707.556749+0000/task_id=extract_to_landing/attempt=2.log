@@ -1,0 +1,47 @@
+[2024-10-27T19:52:35.658+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: holiday_etl_pipeline.extract_to_landing manual__2024-10-27T19:47:07.556749+00:00 [queued]>
+[2024-10-27T19:52:35.664+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: holiday_etl_pipeline.extract_to_landing manual__2024-10-27T19:47:07.556749+00:00 [queued]>
+[2024-10-27T19:52:35.665+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 2
+[2024-10-27T19:52:35.675+0000] {taskinstance.py:2191} INFO - Executing <Task(_PythonDecoratedOperator): extract_to_landing> on 2024-10-27 19:47:07.556749+00:00
+[2024-10-27T19:52:35.680+0000] {standard_task_runner.py:60} INFO - Started process 360 to run task
+[2024-10-27T19:52:35.682+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'holiday_etl_pipeline', 'extract_to_landing', 'manual__2024-10-27T19:47:07.556749+00:00', '--job-id', '25', '--raw', '--subdir', 'DAGS_FOLDER/holidays_orchestror.py', '--cfg-path', '/tmp/tmpj1e58mcp']
+[2024-10-27T19:52:35.683+0000] {standard_task_runner.py:88} INFO - Job 25: Subtask extract_to_landing
+[2024-10-27T19:52:35.721+0000] {task_command.py:423} INFO - Running <TaskInstance: holiday_etl_pipeline.extract_to_landing manual__2024-10-27T19:47:07.556749+00:00 [running]> on host 09302ea91fa9
+[2024-10-27T19:52:35.779+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='holiday_etl_pipeline' AIRFLOW_CTX_TASK_ID='extract_to_landing' AIRFLOW_CTX_EXECUTION_DATE='2024-10-27T19:47:07.556749+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-10-27T19:47:07.556749+00:00'
+[2024-10-27T19:52:39.785+0000] {logging_mixin.py:188} INFO - Erro na extração dos feriados: [Errno 2] No such file or directory: 's3a://datalake/datalake/landing/holidays/year=2024/holidays_2024-10-27.json'
+[2024-10-27T19:52:40.092+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/opt/airflow/dags/scripts/landing/holliday_landing.py", line 218, in extract_to_landing
+    self._save_to_json(all_holidays, file_path)
+  File "/opt/airflow/dags/scripts/landing/holliday_landing.py", line 178, in _save_to_json
+    with open(file_path, 'w', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 's3a://datalake/datalake/landing/holidays/year=2024/holidays_2024-10-27.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/decorators/base.py", line 241, in execute
+    return_value = super().execute(context)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/holidays_orchestror.py", line 39, in extract_holidays
+    return HolidayLandingOrchestrator.extract_holidays()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/scripts/landing/holliday_landing.py", line 255, in extract_holidays
+    result = extractor.extract_to_landing()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/scripts/landing/holliday_landing.py", line 238, in extract_to_landing
+    raise Exception(error_msg)
+Exception: Erro na extração dos feriados: [Errno 2] No such file or directory: 's3a://datalake/datalake/landing/holidays/year=2024/holidays_2024-10-27.json'
+[2024-10-27T19:52:40.105+0000] {taskinstance.py:1138} INFO - Marking task as FAILED. dag_id=holiday_etl_pipeline, task_id=extract_to_landing, execution_date=20241027T194707, start_date=20241027T195235, end_date=20241027T195240
+[2024-10-27T19:52:40.117+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 25 for task extract_to_landing (Erro na extração dos feriados: [Errno 2] No such file or directory: 's3a://datalake/datalake/landing/holidays/year=2024/holidays_2024-10-27.json'; 360)
+[2024-10-27T19:52:40.149+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2024-10-27T19:52:40.167+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

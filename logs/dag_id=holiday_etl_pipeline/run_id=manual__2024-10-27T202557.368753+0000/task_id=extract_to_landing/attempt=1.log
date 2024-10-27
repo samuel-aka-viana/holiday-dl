@@ -1,0 +1,60 @@
+[2024-10-27T20:25:59.346+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: holiday_etl_pipeline.extract_to_landing manual__2024-10-27T20:25:57.368753+00:00 [queued]>
+[2024-10-27T20:25:59.352+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: holiday_etl_pipeline.extract_to_landing manual__2024-10-27T20:25:57.368753+00:00 [queued]>
+[2024-10-27T20:25:59.353+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2024-10-27T20:25:59.363+0000] {taskinstance.py:2191} INFO - Executing <Task(_PythonDecoratedOperator): extract_to_landing> on 2024-10-27 20:25:57.368753+00:00
+[2024-10-27T20:25:59.369+0000] {standard_task_runner.py:60} INFO - Started process 83 to run task
+[2024-10-27T20:25:59.371+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'holiday_etl_pipeline', 'extract_to_landing', 'manual__2024-10-27T20:25:57.368753+00:00', '--job-id', '4', '--raw', '--subdir', 'DAGS_FOLDER/holidays_orchestror.py', '--cfg-path', '/tmp/tmp41ehczmn']
+[2024-10-27T20:25:59.374+0000] {standard_task_runner.py:88} INFO - Job 4: Subtask extract_to_landing
+[2024-10-27T20:25:59.412+0000] {task_command.py:423} INFO - Running <TaskInstance: holiday_etl_pipeline.extract_to_landing manual__2024-10-27T20:25:57.368753+00:00 [running]> on host be01200d7c31
+[2024-10-27T20:25:59.466+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='holiday_etl_pipeline' AIRFLOW_CTX_TASK_ID='extract_to_landing' AIRFLOW_CTX_EXECUTION_DATE='2024-10-27T20:25:57.368753+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-10-27T20:25:57.368753+00:00'
+[2024-10-27T20:26:16.316+0000] {spark_session.py:59} ERROR - Erro ao criar sessão Spark: Java gateway process exited before sending its port number
+[2024-10-27T20:26:16.317+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/opt/airflow/dags/conf/spark_session.py", line 48, in get_session
+    cls._instance = builder.getOrCreate()
+                    ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/pyspark/sql/session.py", line 477, in getOrCreate
+    sc = SparkContext.getOrCreate(sparkConf)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/pyspark/context.py", line 512, in getOrCreate
+    SparkContext(conf=conf or SparkConf())
+  File "/home/airflow/.local/lib/python3.11/site-packages/pyspark/context.py", line 198, in __init__
+    SparkContext._ensure_initialized(self, gateway=gateway, conf=conf)
+  File "/home/airflow/.local/lib/python3.11/site-packages/pyspark/context.py", line 432, in _ensure_initialized
+    SparkContext._gateway = gateway or launch_gateway(conf)
+                                       ^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/pyspark/java_gateway.py", line 106, in launch_gateway
+    raise RuntimeError("Java gateway process exited before sending its port number")
+RuntimeError: Java gateway process exited before sending its port number
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/decorators/base.py", line 241, in execute
+    return_value = super().execute(context)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/holidays_orchestror.py", line 39, in extract_holidays
+    return HolidayLandingOrchestrator.extract_holidays()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/scripts/landing/holliday_landing.py", line 255, in extract_holidays
+    extractor = HolidayLanding()
+                ^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/scripts/landing/holliday_landing.py", line 67, in __init__
+    self.spark = SparkSessionManager.get_session()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/airflow/dags/conf/spark_session.py", line 60, in get_session
+    raise Exception(error_msg)
+Exception: Erro ao criar sessão Spark: Java gateway process exited before sending its port number
+[2024-10-27T20:26:16.329+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=holiday_etl_pipeline, task_id=extract_to_landing, execution_date=20241027T202557, start_date=20241027T202559, end_date=20241027T202616
+[2024-10-27T20:26:16.340+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 4 for task extract_to_landing (Erro ao criar sessão Spark: Java gateway process exited before sending its port number; 83)
+[2024-10-27T20:26:16.358+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2024-10-27T20:26:16.375+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

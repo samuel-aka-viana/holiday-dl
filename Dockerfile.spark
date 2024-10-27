@@ -1,0 +1,77 @@
+# Dockerfile.spark
+FROM bitnami/spark:3.5.0
+
+USER root
+
+# Instalar dependências do sistema
+RUN apt-get update && \
+    apt-get install -y \
+    wget \
+    curl \
+    python3-pip \
+    python3-dev \
+    openjdk-17-jdk \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Versões das dependências
+ENV DELTA_CORE_VERSION=2.4.0
+ENV HADOOP_AWS_VERSION=3.3.4
+ENV AWS_SDK_VERSION=1.12.261
+ENV SCALA_VERSION=2.12
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV SPARK_HOME=/opt/bitnami/spark
+
+# Criar diretórios necessários e definir permissões
+RUN mkdir -p /opt/bitnami/spark/jars \
+    /opt/bitnami/spark/logs \
+    /opt/bitnami/spark/work \
+    /opt/bitnami/spark/conf \
+    /opt/bitnami/spark/events \
+    && chown -R 1001:root /opt/bitnami/spark \
+    && chmod -R 775 /opt/bitnami/spark
+
+# Download das dependências do Delta Lake e AWS
+WORKDIR /tmp
+RUN set -ex && \
+    echo "Downloading Delta Core..." && \
+    wget --verbose https://repo1.maven.org/maven2/io/delta/delta-core_2.12/2.4.0/delta-core_2.12-2.4.0.jar && \
+    echo "Downloading Hadoop AWS..." && \
+    wget --verbose https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar && \
+    echo "Downloading AWS SDK..." && \
+    wget --verbose https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.261/aws-java-sdk-bundle-1.12.261.jar && \
+    echo "Moving JARs..." && \
+    mv *.jar /opt/bitnami/spark/jars/ && \
+    echo "Verifying files..." && \
+    ls -la /opt/bitnami/spark/jars/
+
+# Instalar dependências Python
+COPY requirements.txt /tmp/requirements.txt
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+# Configurar o Spark
+COPY spark-defaults.conf /opt/bitnami/spark/conf/spark-defaults.conf
+
+# Criar arquivo de log4j para controle de logs
+RUN echo 'log4j.rootCategory=INFO, console\nlog4j.appender.console=org.apache.log4j.ConsoleAppender\nlog4j.appender.console.target=System.err\nlog4j.appender.console.layout=org.apache.log4j.PatternLayout\nlog4j.appender.console.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n' > /opt/bitnami/spark/conf/log4j.properties
+
+# Verificar instalação
+RUN echo "Checking Python dependencies..." && \
+    python3 -c "import pyspark; print('PySpark OK'); from delta import *; print('Delta OK'); import pandas; print('Pandas OK')" && \
+    echo "Checking directories..." && \
+    ls -la /opt/bitnami/spark/logs && \
+    ls -la /opt/bitnami/spark/jars
+
+# Configurar variáveis de ambiente adicionais
+ENV SPARK_LOG_DIR=/opt/bitnami/spark/logs
+ENV SPARK_WORKER_DIR=/opt/bitnami/spark/work
+ENV SPARK_LOCAL_DIRS=/opt/bitnami/spark/work
+ENV SPARK_EVENT_LOG_DIR=/opt/bitnami/spark/events
+
+USER 1001
+
+# Criar diretório temporário para o usuário
+RUN mkdir -p /tmp/spark-events && \
+    chmod 777 /tmp/spark-events
+
+WORKDIR ${SPARK_HOME}
